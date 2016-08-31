@@ -9,6 +9,10 @@ zmq.bind(receiver, "tcp://*:5558")
 print("listening on socket 5558 for messages")
 while (TRUE) {
   string <- zmq.recv(receiver)
+  if (string$buf == "__KILL__") {
+    print("__KILL__ message received, shutting down...")
+    break
+  }
   print(string$buf)
 }
 
