@@ -1,0 +1,38 @@
+```{r}
+library(pbdZMQ)
+
+sim_logger <- function(rep, message = "") {
+  context <- zmq.ctx.new()
+  sink <- zmq.socket(context, .pbd_env$ZMQ.ST$PUSH)
+  zmq.connect(sink, "tcp://localhost:5558")
+  zmq.send(sink, paste("completed sim", rep, "from process", Sys.getpid(), "with message: ", message))
+  zmq.close(sink)
+  zmq.ctx.destroy(context)
+}
+
+```
+
+```{r}
+library(future)
+ NREP <- 20
+ t1 <- Sys.time()
+# to debug change plan(eager) and everything runs in current R session
+# plan(multiprocess)
+ plan(multiprocess)
+  f <- list()
+  for (ii in 1:NREP) {
+    f[[ii]] <- future({
+      sleep_time <- runif(1, 1, 5)
+      message <- paste("slept for", round(sleep_time, 3), "seconds")
+      #real sims would go here 
+      Sys.sleep(sleep_time)
+      sim_logger(ii, message)
+      rep_result <- runif(1, 1, 10)
+      return(rep_result)
+    })
+  }
+  all_sims_list <- lapply(f, FUN = value)
+  t2 <- Sys.time()
+  print(paste0("simulations completed in: ", t2 - t1))
+```
+
