@@ -22,13 +22,13 @@ run_receiving_server <- function(cb = cat) {
   while(TRUE){
     msg <- pbdZMQ::zmq.recv(srvr$server)
   if (msg$buf == "__KILL__") {
-    print("__KILL__ message received, shutting down...")
+    message("__KILL__ message received, shutting down server...")
     break
   }
-    print(msg)
     cb(msg$buf)
   }
-  cleanup_server_list(srvr)
+  srvr <- cleanup_server_list(srvr)
+  invisible()
 }
 
 run_receiving_server()
