@@ -1,4 +1,4 @@
-### Initial.
+# startup a server following the sink pattern for zmq
 init_receiving_server <- function(port = NULL) {
   context <- pbdZMQ::zmq.ctx.new()
   srvr <- pbdZMQ::zmq.socket(context, pbdZMQ::ZMQ.ST()$PULL)
@@ -9,14 +9,22 @@ init_receiving_server <- function(port = NULL) {
               port = open_port)
          )
 }
+
+# cleanup the server list created from init_receiving_server
 cleanup_server_list <- function(.server_list) {
   pbdZMQ::zmq.close(.server_list$server)
   pbdZMQ::zmq.ctx.destroy(.server_list$context)
   return(NULL)
 }
 
-run_receiving_server <- function(cb = cat) {
-  srvr <- init_receiving_server()
+#' run a server that follows the zmq sink receiver pattern
+#' @param cb callback to call on message received
+#' @param port force server to initialize on specific port
+#' @details
+#' after initializing the server, will print the port it has bound to,
+#' so that the client sending message can be set to connect
+run_receiving_server <- function(cb = message, port = NULL) {
+  srvr <- init_receiving_server(port)
   # TODO: add some color to messages printed, there should be a color package
   message(paste0("starting server on PORT: ", srvr$port))
   while(TRUE){
@@ -30,5 +38,3 @@ run_receiving_server <- function(cb = cat) {
   srvr <- cleanup_server_list(srvr)
   invisible()
 }
-
-run_receiving_server()
