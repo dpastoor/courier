@@ -10,8 +10,8 @@ init_receiving_server <- function(port = NULL) {
          )
 }
 cleanup_server_list <- function(.server_list) {
-  pbdZMQ::zmq.close(.pair_server_list$server)
-  pbdZMQ::zmq.ctx.destroy(.pair_server_list$context)
+  pbdZMQ::zmq.close(.server_list$server)
+  pbdZMQ::zmq.ctx.destroy(.server_list$context)
   return(NULL)
 }
 
