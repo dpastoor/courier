@@ -1,7 +1,7 @@
 ### Initial.
 init_receiving_server <- function(port = NULL) {
   context <- pbdZMQ::zmq.ctx.new()
-  srvr <- pbdZMQ::zmq.socket(context, pbdZMQ::ZMQ.ST()$PUSH)
+  srvr <- pbdZMQ::zmq.socket(context, pbdZMQ::ZMQ.ST()$PULL)
   open_port <- ifelse(is.null(port), pbdZMQ::random_open_port(), port)
   pbdZMQ::zmq.bind(srvr, pbdZMQ::address("*", open_port))
   return(list(context = context,
@@ -28,7 +28,7 @@ run_receiving_server <- function(cb = cat) {
     print(msg)
     cb(msg$buf)
   }
-  cleanup_server_list()
+  cleanup_server_list(srvr)
 }
 
 run_receiving_server()
