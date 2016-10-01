@@ -6,9 +6,9 @@
 #' port set to pass to init_sink_client()
 #' @export
 init_sink_client <- function(port) {
-  context <- zmq.ctx.new()
-  sink <- zmq.socket(context, pbdZMQ::ZMQ.ST()$PUSH)
-  pbdZMQ::zmq.connect(sink, pbdZMQ::address("*", port))
+  context <- pbdZMQ::zmq.ctx.new()
+  sink <- pbdZMQ::zmq.socket(context, pbdZMQ::ZMQ.ST()$PUSH)
+  pbdZMQ::zmq.connect(sink, pbdZMQ::address("localhost", port))
   return(list(client = sink, context = context, port = port))
 }
 
@@ -23,9 +23,12 @@ init_sink_client <- function(port) {
 sink_send_factory <- function(.sink_client_list) {
   return(function(msg) {
     pbdZMQ::zmq.send(.sink_client_list$client, msg)
-    return(msg)
+    invisible()
   })
 }
+client <- init_sink_client(59003)
+send_msg <- sink_send_factory(client)
+send_msg("a message")
 ### Send sink.
 # cat("Sending tasks to workers ...\n")
 #
