@@ -23,6 +23,7 @@ cleanup_server_list <- function(.server_list) {
 #' @details
 #' after initializing the server, will print the port it has bound to,
 #' so that the client sending message can be set to connect
+#' @export
 run_receiving_server <- function(cb = message, port = NULL) {
   srvr <- init_receiving_server(port)
   # TODO: add some color to messages printed, there should be a color package
