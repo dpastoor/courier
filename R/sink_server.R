@@ -25,6 +25,14 @@ cleanup_server_list <- function(.server_list) {
 #' so that the client sending message can be set to connect
 #' @export
 run_receiving_server <- function(cb = message, port = NULL) {
+  if (!is.function(cb)) {
+    if (is.numeric(cb)) {
+      stop("cb must be a function, perhaps you were trying to set the port?,
+           you must explicitly set with port = <num>, eg port = 5556")
+    } else {
+      stop("cb parameter must be a function")
+    }
+  }
   srvr <- init_receiving_server(port)
   # TODO: add some color to messages printed, there should be a color package
   message(paste0("starting server on PORT: ", srvr$port))
