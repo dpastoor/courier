@@ -10,12 +10,7 @@ init_receiving_server <- function(port = NULL) {
          )
 }
 
-# cleanup the server list created from init_receiving_server
-cleanup_server_list <- function(.server_list) {
-  pbdZMQ::zmq.close(.server_list$server)
-  pbdZMQ::zmq.ctx.destroy(.server_list$context)
-  return(NULL)
-}
+
 
 #' run a server that follows the zmq sink receiver pattern
 #' @param cb callback to call on message received
@@ -44,6 +39,6 @@ run_receiving_server <- function(cb = message, port = NULL) {
   }
     cb(msg$buf)
   }
-  srvr <- cleanup_server_list(srvr)
+  srvr <- cleanup_zmq_list(srvr)
   invisible()
 }
