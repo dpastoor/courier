@@ -1,4 +1,4 @@
-# cleanup the list object created from init_<function>
+#' cleanup the list object created from init functions
 #' @param .zmq_list list object containing zmq context, and server|client instance
 #' @details
 #' when cleaning up the created object, the null output of cleanup_zmq_list

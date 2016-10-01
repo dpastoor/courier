@@ -2,11 +2,15 @@
 % Please edit documentation in R/cleanup.R
 \name{cleanup_zmq_list}
 \alias{cleanup_zmq_list}
+\title{cleanup the list object created from init functions}
 \usage{
 cleanup_zmq_list(.zmq_list)
 }
 \arguments{
 \item{.zmq_list}{list object containing zmq context, and server|client instance}
+}
+\description{
+cleanup the list object created from init functions
 }
 \details{
 when cleaning up the created object, the null output of cleanup_zmq_list
