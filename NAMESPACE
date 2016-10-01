@@ -3,4 +3,4 @@
 export(cleanup_zmq_list)
 export(init_sink_client)
 export(run_receiving_server)
-export(sink_send_factory)
+export(send_message_factory)

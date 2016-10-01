@@ -20,16 +20,16 @@ init_sink_client <- function(port) {
 #' send_msg <- sink_send_factory(client)
 #' send_msg("a message")
 #' @export
-sink_send_factory <- function(.sink_client_list) {
+send_message_factory <- function(.sink_client_list) {
   return(function(msg) {
     pbdZMQ::zmq.send(.sink_client_list$client, msg)
     invisible()
   })
 }
-client <- init_sink_client(61726)
-send_msg <- sink_send_factory(client)
-send_msg("a message")
-send_msg("__KILL__")
+# client <- init_sink_client(61726)
+# send_msg <- sink_send_factory(client)
+# send_msg("a message")
+# send_msg("__KILL__")
 ### Send sink.
 # cat("Sending tasks to workers ...\n")
 #
