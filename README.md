@@ -106,8 +106,11 @@ mb_res %>%
 as.data.frame() %>% 
 group_by(expr) %>% 
 summarize_at(vars(-expr), funs(min, median, max)) %>%
-mutate_at(vars(-expr), funs(unix_to_seconds)) %>% knitr::kable()
-````
+mutate_at(vars(-expr), funs(unix_to_seconds)) %>% 
+knitr::kable()
+```
+
+Run times, in seconds. 40 seconds of work via 8 reps x 5 seconds per rep sleeping, with parallelization across 4 cores for parallel sim
 
 |expr               |   min| median|   max|
 |:------------------|-----:|------:|-----:|
