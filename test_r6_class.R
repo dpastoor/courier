@@ -19,8 +19,10 @@ Courier <- R6::R6Class("courier",
          },
          finalize = function() {
            pbdZMQ::zmq.close(private$client)
-           # TODO: handle finalization of server has been killed
            pbdZMQ::zmq.ctx.destroy(private$context)
+           if (public$verbose) {
+             message(paste0("Courier instance successfully shutdown"))
+           }
 
          },
          # msg should be a single string
