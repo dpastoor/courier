@@ -1,8 +1,8 @@
-library(R6)
-Courier <- R6Class("courier",
+Courier <- R6::R6Class("courier",
      public =
        list(
-         initialize = function(port) {
+         verbose = FALSE,
+         initialize = function(port, verbose = FALSE) {
            print(paste("init with port", port))
            context <- pbdZMQ::zmq.ctx.new()
            sink <- pbdZMQ::zmq.socket(context, pbdZMQ::ZMQ.ST()$PUSH)
@@ -12,18 +12,29 @@ Courier <- R6Class("courier",
            private$port <<- port
            private$context <<- context
            private$client <<- sink
-           print(paste("successfully init with port", port))
+           self$verbose <<- verbose
+           if (self$verbose) {
+              message(paste("successfully initialized on: ", port))
+           }
          },
          finalize = function() {
-           print("Finalizer has been called!")
            pbdZMQ::zmq.close(private$client)
+           # TODO: handle finalization of server has been killed
            pbdZMQ::zmq.ctx.destroy(private$context)
-           print("done cleaning up!")
+
          },
+         # msg should be a single string
          send_msg = function(msg) {
-          print("sending message:")
-          print(msg)
+           if (!is.character(msg) && length(msg) == 1) {
+             stop("msg must be a single character string,
+                  you can always concatenate multipart messages
+                  with paste0")
+           }
           pbdZMQ::zmq.send(private$client, msg)
+          invisible()
+         },
+         send_kill_msg = function(){
+          pbdZMQ::zmq.send(private$client, "__KILL__")
           invisible()
          }
        ),
@@ -34,7 +45,8 @@ Courier <- R6Class("courier",
          context = NULL
        )
 )
-msgr <- Courier$new(5555)
-msgr$send_msg("hello")
+msgr <- Courier$new(5555, TRUE)
+msgr$send_msg(paste0("uid: ", round(runif(1, 0, 10), 3)))
+msgr$send_kill_msg()
 rm(msgr)
 gc()
