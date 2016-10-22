@@ -1,18 +1,22 @@
-Courier <- R6::R6Class("courier",
+Messenger <- R6::R6Class("Messenger",
      public =
        list(
-         verbose = FALSE,
-         initialize = function(port, verbose = FALSE) {
-           print(paste("init with port", port))
+         verbose = NULL,
+         block = NULL,
+         initialize = function(port,
+                               verbose = FALSE,
+                               block = FALSE,
+                               host = "localhost") {
+           self$verbose <<- verbose
+           self$block <<- block
            context <- pbdZMQ::zmq.ctx.new()
            sink <- pbdZMQ::zmq.socket(context, pbdZMQ::ZMQ.ST()$PUSH)
            pbdZMQ::zmq.connect(sink,
-                               pbdZMQ::address("localhost",
+                               pbdZMQ::address(host,
                                                port))
            private$port <<- port
            private$context <<- context
            private$client <<- sink
-           self$verbose <<- verbose
            if (self$verbose) {
               message(paste("successfully initialized on: ", port))
            }
@@ -47,7 +51,7 @@ Courier <- R6::R6Class("courier",
          context = NULL
        )
 )
-msgr <- Courier$new(5555, TRUE)
+msgr <- Messenger$new(5555, TRUE)
 msgr$send_msg(paste0("uid: ", round(runif(1, 0, 10), 3)))
 #msgr$send_kill_msg()
 rm(msgr)
