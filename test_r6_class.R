@@ -20,7 +20,7 @@ Courier <- R6::R6Class("courier",
          finalize = function() {
            pbdZMQ::zmq.close(private$client)
            pbdZMQ::zmq.ctx.destroy(private$context)
-           if (public$verbose) {
+           if (self$verbose) {
              message(paste0("Courier instance successfully shutdown"))
            }
 
@@ -49,6 +49,6 @@ Courier <- R6::R6Class("courier",
 )
 msgr <- Courier$new(5555, TRUE)
 msgr$send_msg(paste0("uid: ", round(runif(1, 0, 10), 3)))
-msgr$send_kill_msg()
+#msgr$send_kill_msg()
 rm(msgr)
 gc()
