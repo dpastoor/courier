@@ -36,7 +36,13 @@ Messenger <- R6::R6Class("Messenger",
                   you can always concatenate multipart messages
                   with paste0")
            }
-          pbdZMQ::zmq.send(private$client, msg)
+           if(self$block) {
+              pbdZMQ::zmq.send(private$client,
+                               msg,
+                               flags = pbdZMQ::ZMQ.SR()$NOBLOCK)
+           } else {
+              pbdZMQ::zmq.send(private$client, msg)
+           }
           invisible()
          },
          send_kill_msg = function(){
@@ -51,8 +57,18 @@ Messenger <- R6::R6Class("Messenger",
          context = NULL
        )
 )
-msgr <- Messenger$new(5555, TRUE)
+msgr <- Messenger$new(5555, TRUE, block = FALSE)
 msgr$send_msg(paste0("uid: ", round(runif(1, 0, 10), 3)))
-#msgr$send_kill_msg()
+msgr$send_kill_msg()
+msgr$send_msg(paste0("uid: ", round(runif(1, 0, 10), 3)))
 rm(msgr)
 gc()
+
+msgr <- Messenger$new(5555, TRUE)
+msgr$send_msg(paste0("uid: ", round(runif(1, 0, 10), 3)))
+msgr$send_kill_msg()
+msgr$send_msg(paste0("uid: ", round(runif(1, 0, 10), 3)))
+rm(msgr)
+gc()
+# will get stuck until the server is started again to drain
+# the messages waiting to be sent
