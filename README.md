@@ -117,3 +117,10 @@ Run times, in seconds. 40 seconds of work via 8 reps x 5 seconds per rep sleepin
 |sim_sequentially() | 40.06|  40.06| 40.07|
 |sim_parallel()     | 10.96|  10.97| 13.11|
 
+### TODO (in somewhat order of priority)
+
+* [ ] Implement JSON send/receive servers for structured logging 
+* [ ] Log messages to file
+* [ ] Full test coverage
+* [ ] GUI for server in either Shiny or Go
+
