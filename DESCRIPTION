@@ -1,6 +1,9 @@
 Package: courier
 Type: Package
 Title: simple message passing for distributed logging
+Version: 0.0.1
+Date: 2016-09-30
+Authors@R: c(
     person("Devin", "Pastoor",
     email = "devin.pastoor@gmail.com", role = c("aut", "cre")))
 Description: Collection of tools for passing messages between actors for logging or updates
