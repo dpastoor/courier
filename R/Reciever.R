@@ -1,15 +1,28 @@
-Receiver <- R6::R6Class("Receiver",
+#' Server to receive messages
+#' @importFrom R6 R6Class
+#' @name Receiver
+#' @examples
+#' \dontrun{
+#' srvr <- Receiver$new() # will pick random open port
+#' srvr$listen()
+#' }
+NULL
+
+#' @export
+Receiver <- R6Class("Receiver",
      public =
        list(
          verbose = NULL,
          log = NULL,
+         cb = NULL,
          initialize = function(port = NULL,
+                               cb = print,
                                verbose = TRUE,
                                log = FALSE
                                ) {
            self$verbose <<- verbose
            self$log <<- log
-
+           self$cb <<- cb
            open_port <- ifelse(is.null(port), pbdZMQ::random_open_port(), port)
 
            context <- pbdZMQ::zmq.ctx.new()
@@ -21,8 +34,20 @@ Receiver <- R6::R6Class("Receiver",
            private$server <<- srvr
 
            if (self$verbose) {
-              message(paste("listening on: ", open_port))
+              message(paste("set to listen on: ", open_port))
            }
+         },
+          listen = function() {
+            message(paste("listening on: ", private$port))
+            while(TRUE){
+             msg <- pbdZMQ::zmq.recv(private$server)
+             if (msg$buf == "__KILL__") {
+               message("__KILL__ message received, shutting down server...")
+               break
+             }
+             self$cb(msg$buf)
+            }
+            invisible()
          },
          finalize = function() {
            pbdZMQ::zmq.close(private$server)
