@@ -1,4 +1,15 @@
-Messenger <- R6::R6Class("Messenger",
+#' Send messages to a Reciever
+#' @importFrom R6 R6Class
+#' @name Messenger
+#' @examples
+#' \dontrun{
+#' msgr <- Messenger$new(12345) # provided from listening Reciever
+#' msgr$send_msg("hello")
+#' }
+NULL
+
+#' @export
+Messenger <- R6Class("Messenger",
      public =
        list(
          verbose = NULL,
