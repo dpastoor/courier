@@ -16,9 +16,13 @@ The entire construction/teardown of the machinery takes less than 3 ms, making i
 
 
 #### Start a separate R thread either in your shell via `R` or open a separate Rstudio instance
+
 ```r
-courier::run_receiving_server()
-## outputs in this instance found open port to run on 50813
+srvr <- courier::Receiver()
+## as no port specified will pick a random open one and print it
+## for example's sake, we will pretend it is 12345
+## want to start listening for messages now
+srvr$listen()
 ```
 
 #### In your main process
@@ -29,15 +33,11 @@ library(purrr)
 library(dplyr)
 
 my_sim <- function(rep) {
+  msgr <- Messenger$new(12345) # the port number the Receiver is listening on
   Sys.sleep(5) ## emulate process that takes 5 seconds to complete
-  courier_msg(paste("completed rep", rep, "on process", Sys.getpid()))
-  return(runif(1, 0, 10))
+  msgr$send_msg(paste("completed rep", rep, "on process", Sys.getpid()))
+  return(runif(1, 0, 10)) # give back some number for "results"
 }
-
-## need to inject access to the courier_msg function as well
-## as proper setup and teardown of connection of the server
-PORT <- 50183 # given from server
-sim_w_message <- decorate_simulation(my_sim, PORT)
 
 ## run each future on the main thread
 sim_sequentially <- function() {
@@ -45,7 +45,7 @@ sim_sequentially <- function() {
   sims <- lapply(1:8, function(x) {
     val <- future({
       message("you'll see this message about starting the sim")
-      sim_w_message(x)
+      my_sim(x)
     })
   })
   map_dbl(sims, value)
@@ -56,7 +56,9 @@ sim_parallel <- function() {
   sims <- lapply(1:8, function(x) {
     val <- future({
       message("you'll never see this message about starting the sim")
-      sim_w_message(x)
+      # because message only works on main thread, however
+      # courier can send messages fine in my_sim
+      my_sim(x)
     })
   })
   map_dbl(sims, value)
