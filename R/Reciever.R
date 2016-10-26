@@ -39,14 +39,18 @@ Receiver <- R6Class("Receiver",
          },
           listen = function() {
             message(paste("listening on: ", private$port))
-            while(TRUE){
-             msg <- pbdZMQ::zmq.recv(private$server)
-             if (msg$buf == "__KILL__") {
-               message("__KILL__ message received, shutting down server...")
-               break
-             }
-             self$cb(msg$buf)
-            }
+            tryCatch(
+              while(TRUE){
+                msg <- pbdZMQ::zmq.recv(private$server)
+                if (msg$buf == "__KILL__") {
+                  message("__KILL__ message received, shutting down server...")
+                  break
+                }
+                self$cb(msg$buf)
+              },
+            interrupt = function(i) {
+              print("shutting down!")
+            })
             invisible()
          },
          finalize = function() {
