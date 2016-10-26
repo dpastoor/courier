@@ -59,6 +59,28 @@ Messenger <- R6Class("Messenger",
            }
           invisible()
          },
+         log = function(msg, level = 1, type = "INFO") {
+           if (!is.character(msg) && length(msg) == 1) {
+             stop("msg must be a single character string,
+                  you can always concatenate multipart messages
+                  with paste0")
+           }
+           msg <- jsonlite::toJSON(list(
+             "message" = msg,
+             "pid" = Sys.getpid(),
+             "time" = Sys.time(),
+             "type" = type,
+             "level" = level
+             ), auto_unbox = TRUE)
+           if(self$block) {
+              pbdZMQ::zmq.send(private$client, msg)
+           } else {
+              pbdZMQ::zmq.send(private$client,
+                               msg,
+                               flags = pbdZMQ::ZMQ.SR()$NOBLOCK)
+           }
+          invisible()
+         },
          send_kill_msg = function(){
           pbdZMQ::zmq.send(private$client, "__KILL__")
           invisible()
