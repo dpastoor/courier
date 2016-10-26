@@ -53,6 +53,23 @@ Receiver <- R6Class("Receiver",
             })
             invisible()
          },
+          listen_and_log = function() {
+            message(paste("listening on: ", private$port, "logging to courier.log"))
+            tryCatch(
+              while(TRUE){
+                msg <- pbdZMQ::zmq.recv(private$server)
+                if (msg$buf == "__KILL__") {
+                  message("__KILL__ message received, shutting down server...")
+                  break
+                }
+                self$cb(msg$buf)
+                write_to_logfile(msg$buf, .file = "courier.log")
+              },
+            interrupt = function(i) {
+              print("shutting down!")
+            })
+            invisible()
+         },
          finalize = function() {
            pbdZMQ::zmq.close(private$server)
            pbdZMQ::zmq.ctx.destroy(private$context)
