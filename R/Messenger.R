@@ -48,11 +48,11 @@ Messenger <- R6Class("Messenger",
                   with paste0")
            }
            if(self$block) {
+              pbdZMQ::zmq.send(private$client, msg)
+           } else {
               pbdZMQ::zmq.send(private$client,
                                msg,
                                flags = pbdZMQ::ZMQ.SR()$NOBLOCK)
-           } else {
-              pbdZMQ::zmq.send(private$client, msg)
            }
           invisible()
          },
