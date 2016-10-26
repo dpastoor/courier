@@ -1,6 +1,7 @@
 #' Send messages to a Reciever
 #' @importFrom R6 R6Class
 #' @name Messenger
+#' @importFrom jsonlite toJSON
 #' @examples
 #' \dontrun{
 #' msgr <- Messenger$new(12345) # provided from listening Reciever
@@ -65,7 +66,7 @@ Messenger <- R6Class("Messenger",
                   you can always concatenate multipart messages
                   with paste0")
            }
-           msg <- jsonlite::toJSON(list(
+           msg <- toJSON(list(
              "message" = msg,
              "pid" = Sys.getpid(),
              "time" = Sys.time(),
@@ -100,12 +101,12 @@ Messenger <- R6Class("Messenger",
 #rm(msgr)
 #gc()
 #
-#msgr <- Messenger$new(5555, TRUE)
-#msgr$send_msg(paste0("uid: ", round(runif(1, 0, 10), 3)))
-#msgr$send_kill_msg()
-#msgr$send_msg(paste0("uid: ", round(runif(1, 0, 10), 3)))
-#rm(msgr)
-#gc()
+# msgr <- Messenger$new(5556, TRUE)
+# msgr$send_msg(paste0("uid: ", round(runif(1, 0, 10), 3)))
+# msgr$log(paste0("uid: ", round(runif(1, 0, 10), 3)))
+# msgr$send_kill_msg()
+# rm(msgr)
+# gc()
 ## will get stuck until the server is started again to drain
 ## the messages waiting to be sent
 #
