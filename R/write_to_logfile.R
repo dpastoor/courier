@@ -2,7 +2,7 @@
 #' @param x string to write to file
 #' @param .file file to write to
 write_to_logfile <- function(x, .file) {
-  if (!as.character(x) && length(x) == 1) {
+  if (!is.character(x) && length(x) == 1) {
     warning("cannot write anything but single character string to file")
     return(invisible())
   }
@@ -11,3 +11,4 @@ write_to_logfile <- function(x, .file) {
   writeLines(x, .file)
   invisible()
 }
+

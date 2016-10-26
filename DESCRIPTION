@@ -10,6 +10,7 @@ Description: Collection of tools for passing messages between actors for logging
 Depends:
     R (>= 3.3.0)
 Imports:
+    jsonlite,
     pbdZMQ,
     R6
 Suggests:
