@@ -33,10 +33,13 @@ Messenger <- R6Class("Messenger",
            }
          },
          finalize = function() {
+           if (self$verbose) {
+             message(paste0("Messenger instance about to be shutdown"))
+           }
            pbdZMQ::zmq.close(private$client)
            pbdZMQ::zmq.ctx.destroy(private$context)
            if (self$verbose) {
-             message(paste0("Courier instance successfully shutdown"))
+             message(paste0("Messenger instance successfully shutdown"))
            }
 
          },
